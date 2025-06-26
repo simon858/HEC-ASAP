@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Buttons</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for icons -->
+      <img src="image/assap logo.png" alt="CaillouSante" style="width: 100px; border-radius: 100px; box-shadow: 0 0 20px .2; margin-left: 400;" />
+    <style>
+        img {
+            position: absolute;
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: "Inter", sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(to bottom, #fdfbff, #ffffff); /* Applied the new background gradient */
+            margin: 0;
+            padding: 20px; /* Add some padding for smaller screens */
+            box-sizing: border-box;
+            overflow: hidden; /* Prevent scrollbar during animation if elements move out */
+        }
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px; /* Space between buttons */
+            width: 100%;
+            max-width: 400px; /* Max width for the container on larger screens */
+        }
+
+
+        .color-button i {
+            margin-right: 1rem;
+        }
+
+        .color-button {
+            justify-content: center;
+            padding-left: 0;
+            gap: 1rem;
+            font-weight: bold;
+        }
+        .color-button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100px; /* Default height for mobile */
+            width: 100%;
+            justify-content: flex-start;
+            ;
+            padding-left: 2rem;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            color: white;
+            background-color: #8A2BE2; /* Default color (Purple) */
+            ;            
+            font-size: 2rem; /* Default icon size for mobile */
+            border-radius: 1rem; /* Rounded corners */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            /* This transition applies the "fade top to bottom" effect to each button */
+            transition: transform 0.6s cubic-bezier(.4,0,.2,1), opacity 0.6s cubic-bezier(.4,0,.2,1);
+            cursor: pointer;
+        }
+        .color-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+        }
+
+         .button-red {
+            background-color: #ff0000; /* A shade of red (OrangeRed) */
+        }
+
+        .button-purple {
+            background-color: #8A2BE2; /* A shade of purple */
+        }
+       
+        .button-blue-purple {
+            background-color: #00aeff; /* A darker shade of purple (Indigo) */
+        }
+
+         .button-orange {
+            background-color: #ff8c00; /* A darker shade of purple (Indigo) */
+        }
+
+        /* Adjustments for larger screens (e.g., tablets and desktops) */
+        @media (min-width: 640px) { /* Applies when screen width is 640px or more */
+            .color-button {
+                height: 120px; /* Larger height for desktop */
+                font-size: 3rem; /* Larger icon size for desktop */
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="button-container">
+        <button class="color-button button-blue-purple" onclick="animateAndRedirect('SUIVI.html')">
+    <i class="fas fa-comments"></i>
+     SUIVI
+
+</button>
+<!-- Red Button with Heart Icon -->
+        <button class="color-button button-red" onclick="animateAndRedirect('sante.html')">
+            <i class="fas fa-heart"></i>
+            SANTÉ
+        </button>
+
+        <!-- Purple Button with User Icon -->
+        <button class="color-button button-purple" onclick="animateAndRedirect('account.html')">
+            <i class="fas fa-user"></i>
+            MON COMPTE 
+        </button>
+
+        
+
+        <!-- Dark Purple Button with Phone Icon -->
+        <button class="color-button button-orange" onclick="animateAndRedirect('parrainage.html')">
+            <i class="fas fa-phone-alt"></i>
+            CONTACT
+        </button>
+
+    </div>
+
+    <script>
+        /**
+         * Animates all buttons to slide down and fade out, then redirects to a specified page.
+         * @param {string} page - The URL of the page to redirect to.
+         */
+        function animateAndRedirect(page) {
+            // Get all buttons within the container
+            const buttons = document.querySelectorAll('.color-button');
+
+            // Apply animation styles to each button
+            buttons.forEach(button => {
+                button.style.transform = 'translateY(100vh)'; // Move down off-screen
+                button.style.opacity = '0'; // Fade out
+            });
+
+            // After the animation duration (0.6 seconds), redirect to the new page
+            // The timeout duration matches the CSS transition duration for a smooth transition.
+            setTimeout(() => {
+                window.location.href = page;
+            }, 1600); // 600ms = 0.6 seconds, aligning with the CSS transition
+        }
+    </script>
+</body>
+</html>

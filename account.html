@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Compte - Vue Facile</title>
+    <!-- Tailwind CSS CDN pour les classes utilitaires (optionnel, mais conservé pour la cohérence) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome pour les icônes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Styles de base pour le corps - Priorité mobile */
+        body {
+            font-family: "Inter", sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(to bottom, #d9aaff, #ffffff);
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+
+        /* Conteneur principal du formulaire de compte - Priorité mobile */
+        .container {
+            background-color: white;
+            padding: 25px; /* Rembourrage par défaut pour mobile */
+            border-radius: 1rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            width: calc(100% - 30px); /* Prend en compte le rembourrage du corps */
+            max-width: 580px; /* Largeur maximale pour éviter l'étirement sur les très grands téléphones */
+            margin-top: 40px; /* Augmenté pour compenser l'absence d'en-tête */
+            margin-bottom: 20px;
+        }
+
+        /* Style pour le titre principal (à l'intérieur du conteneur) */
+        .container h1 {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #9551ff;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        /* Mise en page de la section de la photo de profil */
+        .profile-pic-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        /* Style individuel de la photo de profil - Priorité mobile */
+        .profile-pic {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background-color: #8A2BE2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 4rem;
+            margin-bottom: 15px;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            cursor: pointer; /* Indique qu'il est cliquable */
+        }
+
+        /* Libellé pour changer la photo de profil - Cohérent sur toutes les tailles, mais peut être ajusté */
+        .profile-pic-label {
+            font-size: 1.1rem;
+            color: #4B0082;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        /* Style pour chaque groupe de formulaire (libellé + entrée) */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        /* Conteneur pour l'entrée et l'icône */
+        .input-with-icon {
+            display: flex;
+            align-items: center;
+            width: 100%; /* S'assure que l'entrée prend l'espace disponible */
+        }
+
+        /* Libellés pour les entrées de formulaire - Priorité mobile */
+        .form-group label {
+            display: block;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #9551ff;
+            margin-bottom: 8px;
+        }
+
+        /* Style pour toutes les entrées de texte, email, tel et la zone de texte - Priorité mobile */
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="tel"],
+        .form-group input[type="number"],
+        .form-group textarea {
+            flex-grow: 1; /* Permet à l'entrée de prendre le plus d'espace */
+            padding: 15px;
+            font-size: 1.2rem;
+            border: 1px solid #D1D5DB;
+            border-radius: 0.6rem;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+            color: #333;
+            background-color: #f9f9f9; /* Légèrement blanc cassé pour la lecture seule */
+        }
+
+        /* État de focus pour les champs de saisie */
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #8A2BE2;
+            box-shadow: 0 0 0 2px rgba(138, 43, 226, 0.2);
+            background-color: white; /* Fond blanc lorsque modifiable */
+        }
+
+        /* Style spécifique pour la zone de texte - Priorité mobile */
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        /* Style pour l'icône d'édition/verrouillage */
+        .edit-icon {
+            margin-left: 10px; /* Espace entre l'entrée et l'icône */
+            font-size: 1.4rem; /* Taille de l'icône */
+            color: #8A2BE2; /* Couleur violette pour l'icône */
+            cursor: pointer; /* Indique qu'il est cliquable */
+            flex-shrink: 0; /* Empêche l'icône de rétrécir */
+            width: 30px; /* Largeur fixe pour un alignement cohérent */
+            text-align: center;
+        }
+        .edit-icon:hover {
+            color: #9551ff; /* Violet plus foncé au survol */
+        }
+        .edit-icon.active {
+            color: #8a2be2; /* Rouge lorsque actif/modifiable */
+        }
+
+
+        /* Style pour le bouton d'enregistrement - Priorité mobile */
+        .save-button {
+            width: 100%;
+            padding: 18px 0;
+            background-color: #9551ff;
+            color: white;
+            font-size: 1.6rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 0.8rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        /* Effet de survol pour le bouton d'enregistrement */
+        .save-button:hover {
+            background-color: #9551ff;
+            transform: translateY(-2px);
+        }
+
+        /* Style pour le nouveau bouton de retour en bas (rond et icône seulement) */
+        .back-to-previous-button {
+            width: 60px; /* Largeur fixe pour un bouton rond */
+            height: 60px; /* Hauteur fixe pour un bouton rond */
+            border-radius: 50%; /* Rendre le bouton rond */
+            background-color: #8A2BE2; /* Couleur violette */
+            color: white;
+            font-size: 1.8rem; /* Taille de l'icône plus grande */
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(138, 43, 226, 0.2);
+            margin-top: 20px; /* Espace par rapport au contenu au-dessus */
+            margin-bottom: 40px; /* Plus d'espace en bas de la page */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* Pas de gap car il n'y a pas de texte */
+        }
+        .back-to-previous-button:hover {
+            background-color: #6A1FB8; /* Violet plus foncé au survol */
+            transform: translateY(-2px);
+        }
+        .back-to-previous-button i {
+            font-size: 1.8rem; /* Assurer que l'icône reste grande */
+        }
+
+        /* Requête média pour les grands écrans (tablettes et ordinateurs de bureau) - Annule les valeurs par défaut mobiles */
+        @media (min-width: 769px) {
+            .container {
+                padding: 40px;
+                border-radius: 1.5rem;
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+                margin-top: 40px;
+                margin-bottom: 40px;
+                width: 100%; /* Lui permet de prendre toute la largeur jusqu'à la largeur maximale */
+            }
+            .container h1 {
+                font-size: 2.5rem;
+                margin-bottom: 30px;
+            }
+            .profile-pic-container {
+                margin-bottom: 40px;
+            }
+            .profile-pic {
+                width: 160px;
+                height: 160px;
+                font-size: 5rem;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+            .profile-pic-label {
+                font-size: 1.25rem;
+            }
+            .form-group {
+                margin-bottom: 25px;
+            }
+            .form-group label {
+                font-size: 1.5rem;
+                margin-bottom: 10px;
+            }
+            .form-group input[type="text"],
+            .form-group input[type="email"],
+            .form-group input[type="tel"],
+            .form-group input[type="number"],
+            .form-group textarea {
+                padding: 18px 20px;
+                font-size: 1.4rem;
+                border: 2px solid #D1D5DB;
+                border-radius: 0.75rem;
+            }
+            .form-group input:focus,
+            .form-group textarea:focus {
+                box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.3);
+            }
+            .form-group textarea {
+                min-height: 120px;
+            }
+            .save-button {
+                padding: 20px 0;
+                font-size: 1.8rem;
+                border-radius: 1rem;
+                box-shadow: 0 6px 12px rgba(255, 69, 0, 0.3);
+            }
+            .edit-icon {
+                font-size: 1.6rem;
+            }
+            .back-to-previous-button {
+                width: 70px; /* Plus grand pour le bureau */
+                height: 70px; /* Plus grand pour le bureau */
+                font-size: 2.2rem; /* Icône plus grande pour le bureau */
+                margin-top: 30px;
+                margin-bottom: 60px;
+            }
+            .back-to-previous-button i {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Le header a été supprimé comme demandé -->
+
+    <div class="container">
+        <h1>Détails du Profil</h1>
+
+        <div class="profile-pic-container">
+            <div class="profile-pic" onclick="document.getElementById('profileUpload').click()">
+                <i class="fas fa-user"></i> <!-- Icône utilisateur comme espace réservé -->
+            </div>
+            <!-- Champ de saisie de fichier caché, déclenché par le libellé ou en cliquant sur la div de la photo de profil -->
+            <label for="profileUpload" class="profile-pic-label">Changer la Photo</label>
+            <input type="file" id="profileUpload" accept="image/*" class="hidden">
+        </div>
+
+        <form>
+            <div class="form-group">
+                <label for="firstName">Prénom</label>
+                <div class="input-with-icon">
+                    <input type="text" id="firstName" placeholder="Ex: Marie" value="Marie" readonly>
+                    <i class="fas fa-pencil-alt edit-icon" data-target="firstName"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="lastName">Nom de Famille</label>
+                <div class="input-with-icon">
+                    <input type="text" id="lastName" placeholder="Ex: Dupont" value="Dupont" readonly>
+                    <i class="fas fa-pencil-alt edit-icon" data-target="lastName"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="age">Âge</label>
+                <div class="input-with-icon">
+                    <input type="number" id="age" placeholder="Ex: 75" min="0" max="120" value="75" readonly>
+                    <i class="fas fa-pencil-alt edit-icon" data-target="age"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="email">E-mail</label>
+                <div class="input-with-icon">
+                    <input type="email" id="email" placeholder="Ex: marie.dupont@exemple.com" value="marie.dupont@exemple.com" readonly>
+                    <i class="fas fa-pencil-alt edit-icon" data-target="email"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="phoneNumber">Numéro de Téléphone</label>
+                <div class="input-with-icon">
+                    <input type="tel" id="phoneNumber" placeholder="Ex: +33 6 12 34 56 78" value="+33 6 12 34 56 78" readonly>
+                    <i class="fas fa-pencil-alt edit-icon" data-target="phoneNumber"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="essentialInfo">Informations Essentielles</label>
+                <div class="input-with-icon">
+                    <textarea id="essentialInfo" rows="5" placeholder="Ex: Contact d'urgence: Jean Dupont (Fils) - 06 98 76 54 32, Médicaments: Insuline, Notes: Malentendant" readonly>Contact d'urgence: Jean Dupont (Fils) - 06 98 76 54 32
+Médicaments: Insuline
+Notes: Malentendant</textarea>
+                    <i class="fas fa-pencil-alt edit-icon" data-target="essentialInfo"></i>
+                </div>
+            </div>
+
+            <button type="submit" class="save-button">Enregistrer les Modifications</button>
+        </form>
+    </div>
+
+    <!-- Nouveau bouton pour revenir à la page précédente, en bas -->
+    <button class="back-to-previous-button" onclick="window.location.href='mainpage.html'">
+        <i class="fas fa-arrow-left"></i>
+    </button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const editIcons = document.querySelectorAll('.edit-icon');
+
+            editIcons.forEach(icon => {
+                icon.addEventListener('click', () => {
+                    const targetId = icon.dataset.target;
+                    const inputElement = document.getElementById(targetId);
+
+                    if (inputElement) {
+                        // Toggle readonly attribute
+                        const isReadonly = inputElement.readOnly;
+                        inputElement.readOnly = !isReadonly;
+
+                        // Toggle icon visual and behavior
+                        if (inputElement.readOnly) {
+                            icon.classList.remove('active');
+                            icon.classList.add('fa-pencil-alt'); // Change back to pencil
+                            icon.classList.remove('fa-check'); // Remove check icon
+                            // You might want to save data here, or rely on the main save button
+                        } else {
+                            icon.classList.add('active');
+                            icon.classList.remove('fa-pencil-alt'); // Change to check
+                            icon.classList.add('fa-check'); // Add check icon
+                            inputElement.focus(); // Focus the input for immediate editing
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

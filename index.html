@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Landing - Collier Connecté</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to bottom, #d9aaff, #ffffff);
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+
+    .screen {
+      max-width: 400px;
+      margin: auto;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 40px 20px;
+      box-sizing: border-box;
+      background-color: #f6f2ff;
+      border-radius: 30px 30px 0 0;
+      box-shadow: 0 -2px 20px rgba(0, 0, 0, 0.2);
+      transition: 
+        opacity 0.7s ease,
+        transform 0.7s cubic-bezier(.77,0,.18,1);
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .screen.fade-out {
+      opacity: 0;
+      transform: translateY(-100%);
+      pointer-events: none;
+    }
+
+    .logo {
+      text-align: center;
+    }
+
+    .logo img {
+      width: 60px;
+      margin-bottom: 10px;
+    }
+
+    .title {
+      font-size: 35px;
+      text-transform: uppercase;
+      font-weight: 1000;
+      margin-bottom: 10px;
+      text-align: center;
+      color: #5742f1;
+      font-family: 'Roboto', Arial, sans-serif;
+      
+    }
+
+    .description {
+      text-align: center;
+      font-size: 24px;
+      margin-top: 30px;
+      margin-bottom: 30px;
+      color: #444444;
+    }
+
+    .video-section {
+      border-radius: 20px;
+      box-shadow: 0 0 40px rgba(0, 0, 0, 0.105);
+      text-align: center;
+    }
+
+    .video-section iframe {
+      width: 100%;
+      height: 220px;
+      border: none;
+      border-radius: 12px;
+    }
+
+    span{
+      background-color: #614cf6;
+      padding: 0px 5px 0px 5px;
+      border-radius: 5px;
+    
+      color: white;
+  }
+
+    .button {
+      background: linear-gradient(135deg, #614cf6, rgb(123, 8, 255));
+      border: none;
+      color: white;
+      font-size: 38px;
+      padding: 14px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: bold;
+      width: 100%;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      margin-top: 20px;
+    }
+    
+  </style>
+</head>
+<body>
+
+  <div class="screen" id="mainScreen">
+    <div class="logo">
+      <img src="image/assap logo.png" alt="CaillouSante" style="width: 100px; border-radius: 100px; box-shadow: 0 0 20px .2;"/>
+      <div class="title">Veuillez allumer  <span>votre ASAP ring</span> 
+      </div>
+      <div class="description">
+        Suivez les instructions dans cette vidéo pour allumer correctement votre ASAP RING connecté.
+        Puis veuillez continuer
+      </div>
+    </div>
+
+    <div class="video-section">
+      <iframe src="https://www.youtube.com/embed/VIDEO_ID" title="Tutoriel d'allumage du collier"></iframe>
+    </div>
+
+    <button class="button" id="fadeBtn">J'ai allumé ma ring</button>
+    <script>
+      document.getElementById('fadeBtn').addEventListener('click', function() {
+      const screen = document.getElementById('mainScreen');
+      screen.style.transition = `
+        opacity 0.5s ease,
+        transform 1.5s cubic-bezier(.77,0,.18,1)
+      `;
+      screen.classList.add('fade-out');
+      setTimeout(function() {
+        window.location = "parrainage.html"; // Redirige vers la deuxième page locale
+      }, 700); // Correspond à la durée de la transition CSS
+      });
+    </script>
+  </div>
+
+  I
+  
+</body>
+</html>

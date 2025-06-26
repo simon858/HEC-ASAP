@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ajouter un contact</title>
+  
+  
+  <style>
+    /* Mobile First Design */
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, sans-serif;
+      background: linear-gradient(to bottom, #d9aaff, #ffffff);
+      color: #333;
+    }
+
+    .screen {
+      padding: 24px 16px;
+      background-color: #ffffff;
+      min-height: 100vh;
+      border-radius: 24px 24px 0 0;
+      box-shadow: 0 -2px 16px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    h1 {
+      font-family: 'Roboto', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, sans-serif;
+      font-size: 49px;
+      text-align: center;
+      font-weight: 700;
+      line-height: 1.2;
+      color: #ffbc51;
+      margin-bottom: 24px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    label {
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    input, ::placeholder {
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 600;
+      color: #626262;
+    }
+
+
+    input {
+      padding: 12px;
+      width: 310px;
+      font-size: 16px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      outline: none;
+    }
+
+    input:focus {
+      outline: 2px solid #ffa200;
+      border-color: #ffc363;
+    }
+
+    button {
+      padding: 14px;
+      font-size: 18px;
+      font-weight: bold;
+      background: linear-gradient(135deg, #ff9a15, #ffbb4d);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:focus {
+      outline: 3px solid #ffffff;
+      outline-offset: 2px;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    li {
+      background-color: #f3effa;
+      padding: 14px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 4px rgba(179, 0, 255, 0.08);
+    }
+
+    .contact-name {
+      font-weight: bold;
+      font-size: 36px;
+      color: #ff775f;
+
+    }
+
+    .contact-details {
+      font-size: 24px;
+      font-weight: bold;
+      color: rgba(255, 255, 255, 0.337);
+    }
+
+.description {
+  font-size: 20px;
+  color: #555;
+  text-align: center;
+  margin-bottom: 24px;
+    }
+
+    .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  border: 0;
+    }
+
+    @media (min-width: 600px) {
+  /* Amélioration pour tablette et plus */
+  .screen {
+    max-width: 500px;
+    margin: auto;
+    padding: 40px;
+  }
+
+  h1 {
+    font-size: 28px;
+  }
+
+  input, button {
+    font-size: 18px;
+  }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="screen" role="main">
+      <img src="image/assap logo.png" alt="CaillouSante" style="width: 50px; border-radius: 100px; box-shadow: 0 0 20px .2; margin-left: 400;" />
+
+    <h1>Contact Prioritaire</h1>
+        <div class="description">
+       Veuillez entrer les contacts Prioritaire être contacté </div>
+
+    <form id="contactForm" aria-label="Formulaire d'ajout de contact">
+      <div>
+        <input type="text" id="name" name="name" required aria-required="true" autocomplete="name" placeholder="nom complet" />
+      </div>
+      <div>
+        <input type="text" id="info" name="info" required aria-required="true" autocomplete="tel" placeholder="Numéro de telephone"/>
+      </div>
+      <button type="submit">Ajouter</button>
+    </form>
+
+    <section aria-labelledby="contactListTitle">
+      <h2 id="contactListTitle" class="sr-only">Liste des contacts</h2>
+      <ul id="contactList" aria-live="polite"></ul>
+    </section>
+  </main>
+
+  <script>
+    const form = document.getElementById('contactForm');
+    const contactList = document.getElementById('contactList');
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const name = document.getElementById('name').value.trim();
+      const info = document.getElementById('info').value.trim();
+
+      if (name && info) {
+        const li = document.createElement('li');
+
+        const nameEl = document.createElement('div');
+        nameEl.className = 'contact-name';
+        nameEl.textContent = name;
+
+        const infoEl = document.createElement('div');
+        infoEl.className = 'contact-details';
+        infoEl.textContent = info;
+
+        li.appendChild(nameEl);
+        li.appendChild(infoEl);
+
+        contactList.appendChild(li);
+        form.reset();
+        document.getElementById('name').focus();
+      }
+    });
+  </script>
+
+<button style="
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #6c63ff, #9f4dff);
+    border: none;
+    border-radius: 50%;
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(76,0,130,0.12);
+    cursor: pointer;
+    z-index: 1000;
+  " aria-label="Suivant">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+      <path d="M8 5l8 7-8 7" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+
+<script>
+    const nextBtn = document.querySelector('button[aria-label="Suivant"]');
+    const mainScreen = document.querySelector('.screen');
+
+    nextBtn.addEventListener('click', () => {
+        // Animate main screen
+        mainScreen.style.transition = 'transform 1.6s cubic-bezier(.4,0,.2,1), opacity 0.6s cubic-bezier(.4,0,.2,1)';
+        mainScreen.style.transform = 'translateY(100vh)';
+        mainScreen.style.opacity = '0';
+
+        // Animate button
+        nextBtn.style.transition = 'transform 1.6s cubic-bezier(.4,0,.2,1), opacity 0.6s cubic-bezier(.4,0,.2,1)';
+        nextBtn.style.transform = 'translateY(100vh)';
+        nextBtn.style.opacity = '0';
+
+        // After animation, redirect to another local HTML page
+        setTimeout(() => {
+            window.location.href = 'mainpage.html'; // Change to your target page
+        }, 600);
+    });
+</script>
+</body>
+
+
+
+</html>

@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Interface</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Define the Inter font family */
+        body {
+            font-family: "Inter", sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(to bottom, #fdfbff, #ffffff); /* Similar gradient to your example */
+            margin: 0;
+            padding: 16px; /* Default padding for mobile */
+            box-sizing: border-box;
+            overflow: hidden; /* Prevent scrollbar for body */
+        }
+
+        /* Chatbot container styles - Mobile First Defaults */
+        .chatbot-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 95vh; /* Taller on small screens */
+            max-height: 800px; /* Max height */
+            background-color: #ffffff;
+            border-radius: 1rem; /* Default rounded corners for mobile */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden; /* Ensure content stays within rounded corners */
+            animation: fadeInScale 0.8s ease-out forwards; /* Animation for the whole chatbot */
+        }
+
+        /* Keyframe animation for chatbot appearance */
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Header styling - Mobile First Defaults */
+        .chatbot-header {
+            background: linear-gradient(to right, #00aeff, #8A2BE2); /* Blue-purple gradient */
+            color: white;
+            padding: 1rem; /* Default padding for mobile */
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .chatbot-header .avatar {
+            width: 40px; /* Default size for mobile */
+            height: 40px; /* Default size for mobile */
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem; /* Default font size for mobile */
+            margin-right: 0.8rem; /* Default margin for mobile */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .chatbot-header .title {
+            font-size: 1.2rem; /* Default font size for mobile */
+            font-weight: bold;
+        }
+
+        .chatbot-header .action-buttons button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            margin-left: 0.8rem;
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .chatbot-header .action-buttons button:hover {
+            transform: scale(1.1);
+        }
+
+        /* Message display area - Mobile First Defaults */
+        .message-display {
+            flex-grow: 1; /* Allows it to take available space */
+            padding: 1rem; /* Default padding for mobile */
+            overflow-y: auto; /* Enable scrolling */
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem; /* Default space between messages for mobile */
+        }
+
+        /* Individual message bubble styles - Mobile First Defaults */
+        .message-bubble {
+            max-width: 80%; /* Messages shouldn't span full width */
+            padding: 0.7rem 1rem; /* Default padding for mobile */
+            border-radius: 1rem; /* Default rounded corners for bubbles on mobile */
+            line-height: 1.4;
+            word-wrap: break-word; /* Ensure long words break */
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            animation: slideInFromSide 0.3s ease-out forwards; /* Animation for new messages */
+        }
+
+        /* Keyframe animation for message bubbles */
+        @keyframes slideInFromSide {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .message-bubble.user {
+            background-color: #8A2BE2; /* User message color (Purple) */
+            color: white;
+            align-self: flex-end; /* Align to the right */
+            border-bottom-right-radius: 0.5rem; /* Tighter corner on one side */
+        }
+
+        .message-bubble.bot {
+            background-color: #e0e0e0; /* Bot message color (Light Gray) */
+            color: #333;
+            align-self: flex-start; /* Align to the left */
+            border-bottom-left-radius: 0.5rem; /* Tighter corner on one side */
+        }
+
+        /* Typing indicator */
+        .typing-indicator {
+            align-self: flex-start;
+            padding: 0.8rem 1.2rem;
+            background-color: #e0e0e0;
+            border-radius: 1.2rem;
+            border-bottom-left-radius: 0.5rem;
+            color: #555;
+            font-style: italic;
+            display: flex;
+            align-items: center;
+            opacity: 0; /* Hidden by default */
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .typing-indicator.visible {
+            opacity: 1;
+        }
+
+        .typing-indicator span {
+            animation: bounce 1s infinite;
+        }
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-5px); }
+        }
+
+
+        /* Input area styling - Mobile First Defaults */
+        .input-area {
+            display: flex;
+            padding: 1rem; /* Default padding for mobile */
+            border-top: 1px solid #eee;
+            gap: 0.8rem; /* Default gap for mobile */
+            background-color: #f9f9f9;
+        }
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Ensures the image covers the avatar area */
+            border-radius: 50%; /* Makes the image circular */
+        }
+
+        .input-area input[type="text"] {
+            flex-grow: 1;
+            padding: 0.8rem 1rem; /* Default padding for mobile */
+            border: 1px solid #ddd;
+            border-radius: 1.5rem; /* More rounded input field */
+            font-size: 0.9rem; /* Default font size for mobile */
+            outline: none;
+            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+
+        .input-area input[type="text"]:focus {
+            border-color: #00aeff; /* Highlight on focus */
+            box-shadow: 0 0 0 3px rgba(0, 174, 255, 0.2);
+        }
+
+        .input-area button {
+            background: linear-gradient(to right, #00aeff, #00a2ff); /* Gradient send button */
+            color: white;
+            border: none;
+            border-radius: 1.5rem; /* More rounded button */
+            padding: 0.8rem 1rem; /* Default padding for mobile */
+            font-size: 1rem; /* Default font size for mobile */
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .input-area button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Adjustments for larger screens (e.g., tablets and desktops) */
+        @media (min-width: 640px) { /* Applies when screen width is 640px or more */
+            body {
+                padding: 20px;
+            }
+            .chatbot-container {
+                width: 100%;
+                max-width: 500px;
+                height: 80vh;
+                border-radius: 1.5rem;
+            }
+            .chatbot-header {
+                padding: 1.5rem;
+            }
+            .chatbot-header .avatar {
+                width: 48px;
+                height: 48px;
+                font-size: 1.5rem;
+                margin-right: 1rem;
+            }
+            .chatbot-header .title {
+                font-size: 1.5rem;
+            }
+            .message-display {
+                padding: 1.5rem;
+                gap: 1rem;
+            }
+            .message-bubble {
+                padding: 0.8rem 1.2rem;
+                border-radius: 1.2rem;
+            }
+            .input-area {
+                padding: 1.5rem;
+                gap: 1rem;
+            }
+            .input-area input[type="text"] {
+                padding: 1rem 1.2rem;
+                font-size: 1rem;
+            }
+            .input-area button {
+                padding: 1rem 1.5rem;
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="chatbot-container">
+        <div class="chatbot-header">
+            <div class="flex items-center">
+                <div class="avatar"><img src="image/assap logo.png"></div>
+                <span class="title">Vivien Selvachadran</span>
+            </div>
+            <div class="action-buttons">
+                <!-- Using Font Awesome icons for close and minimize (concept only, no functionality) -->
+                <button><i class="fas fa-minus"></i></button>
+                <button><i class="fas fa-times"></i></button>
+            </div>
+        </div>
+
+        <div class="message-display" id="messageDisplay">
+            <!-- Messages will be appended here -->
+            <div class="message-bubble bot">
+                Suite aux dernières mesures relevées lors du suivi de routine, certains paramètres de santé de Nolan présentent des valeurs préoccupantes. Bien que ces chiffres ne permettent pas d'établir un diagnostic immédiat, ils justifient une attention particulière.
+
+Je recommande vivement à Nolan de consulter son médecin traitant dans les meilleurs délais afin d’effectuer des examens complémentaires. Il est important de ne pas négliger ces signaux, même s’il ne ressent actuellement aucun symptôme marquant.
+
+Il ne s’agit pas d’alarmer, mais de prévenir. Une évaluation approfondie permettra de s'assurer que tout est sous contrôle ou, le cas échéant, de prendre les mesures nécessaires rapidement.
+
+Conclusion :
+Les résultats méritent une vigilance accrue. Merci de prendre rendez-vous dès que possible pour un avis médical complet.
+
+Bien cordialement,
+Dr Selvachadran Vivien
+Médecin référent
+            </div>
+            <div class="typing-indicator" id="typingIndicator">
+                <span>.</span><span>.</span><span>.</span>
+            </div>
+        </div>
+
+        <div class="input-area">
+            <input type="text" id="messageInput" placeholder="Type your message..." autocomplete="off">
+            <button id="sendMessageBtn">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const messageInput = document.getElementById('messageInput');
+        const sendMessageBtn = document.getElementById('sendMessageBtn');
+        const messageDisplay = document.getElementById('messageDisplay');
+        const typingIndicator = document.getElementById('typingIndicator');
+
+        /**
+         * Adds a message to the chat display.
+         * @param {string} text - The text content of the message.
+         * @param {string} sender - 'user' or 'bot'.
+         */
+        function addMessage(text, sender) {
+            const messageBubble = document.createElement('div');
+            messageBubble.classList.add('message-bubble', sender);
+            messageBubble.textContent = text;
+            // Add a slight delay for animation effect
+            setTimeout(() => {
+                messageDisplay.appendChild(messageBubble);
+                messageDisplay.scrollTop = messageDisplay.scrollHeight; // Scroll to bottom
+            }, 50); // Small delay for visual effect
+        }
+
+        /**
+         * Shows the typing indicator.
+         */
+        function showTypingIndicator() {
+            typingIndicator.classList.add('visible');
+            messageDisplay.scrollTop = messageDisplay.scrollHeight;
+        }
+
+        /**
+         * Hides the typing indicator.
+         */
+        function hideTypingIndicator() {
+            typingIndicator.classList.remove('visible');
+        }
+
+        /**
+         * Simulates a chatbot response. In a real application, this would
+         * involve sending the user's message to an API and getting a response.
+         * For this example, it's a simple echo or a fixed response.
+         * @param {string} userMessage - The message from the user.
+         */
+        async function getBotResponse(userMessage) {
+            showTypingIndicator();
+            // Simulate API call delay
+            await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 1000)); // 1-2 second delay
+
+            hideTypingIndicator();
+
+            let botResponse = "Veuillez patienter pendant que je traite votre demande...";
+
+            if (userMessage.toLowerCase().includes("hello") || userMessage.toLowerCase().includes("hi")) {
+                botResponse = "Hello there! How can I help you today?";
+            } else if (userMessage.toLowerCase().includes("how are you")) {
+                botResponse = "I'm just a program, but I'm doing great! Thanks for asking.";
+            } else if (userMessage.toLowerCase().includes("your name")) {
+                botResponse = "I am a chatbot. You can call me Bot.";
+            } else if (userMessage.toLowerCase().includes("what can you do")) {
+                botResponse = "I can chat with you, provide information, and assist with various tasks, depending on my programming. Try asking me something!";
+            } else if (userMessage.toLowerCase().includes("weather")) {
+                botResponse = "I cannot provide real-time weather information at the moment.";
+            } else {
+                // Call the LLM to generate a response
+                try {
+                    let chatHistory = [];
+                    chatHistory.push({ role: "user", parts: [{ text: userMessage }] });
+                    const payload = { contents: chatHistory };
+                    const apiKey = ""; // Canvas will provide this
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const result = await response.json();
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        botResponse = result.candidates[0].content.parts[0].text;
+                    } else {
+                        console.error("Gemini API response structure unexpected:", result);
+                    }
+                } catch (error) {
+                    console.error("Error calling Gemini API:", error);
+                    botResponse = "I'm having trouble connecting to my brain right now. Please try again later.";
+                }
+            }
+
+            addMessage(botResponse, 'bot');
+        }
+
+        /**
+         * Handles sending a message when the button is clicked or Enter is pressed.
+         */
+        async function handleSendMessage() {
+            const messageText = messageInput.value.trim();
+            if (messageText) {
+                addMessage(messageText, 'user');
+                messageInput.value = ''; // Clear input field
+                await getBotResponse(messageText);
+            }
+        }
+
+        // Event listener for the send button
+        sendMessageBtn.addEventListener('click', handleSendMessage);
+
+        // Event listener for the Enter key in the input field
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                handleSendMessage();
+            }
+        });
+
+        // Hide typing indicator initially
+        hideTypingIndicator();
+
+        // Initial scroll to bottom to ensure the first bot message is visible
+        window.onload = () => {
+            messageDisplay.scrollTop = messageDisplay.scrollHeight;
+        };
+
+    </script>
+</body>
+</html>
